@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Components.Forms
 @using Visions.Data
 @using System.Linq
 @inject IJSRuntime JSRuntime
@@ -21,82 +22,83 @@
     </div>
 
 </div>
+<div class="container" >
+    <div class="left">
 
-<div>
-    
         <input type="checkbox" @bind="HighDetail" name="High" value="True">
         <label>HighDetail</label>
         <input type="number" @bind="MaxTokens" />
         <label>MaxTokens</label>
         <button type="submit" @onclick="CallOpenAPI" class="btn-primary">submit</button>
-    
-    <label>Prompt</label>
-    <textarea @bind="promptText" style="width: 100%; height: 100%"></textarea>
 
-    <p>@statusText</p>
-@*     @if (showResult)
-    {
-        <h3>Resultat</h3>
-        <p>@responseText</p>
-    }
-    else
-    {
-        <p>@statusText</p>
-    } *@
-
-@*     <p>@statusText</p>
-    @if (showResult)
-    {
-        <h3>Usage</h3>
-        <table class="table">
-            <tbody>
-            <tr>
-                <td>Prompt Tokens</td>
-                <td>@usage.prompt_tokens</td>
-            </tr>
-            <tr>
-                <td>Completion Tokens</td>
-                <td>@usage.completion_tokens</td>
-            </tr>
-            <tr>
-                <td>Total Tokens</td>
-                <td>@usage.total_tokens</td>
-            </tr>
-            <tr>
-                <td>USD</td>
-                <td>@usage.USD.ToString("N4")$</td>
-            </tr>
-            <tr>
-                <td>ØRE</td>
-                <td>@usage.Ore.ToString("N4")</td>
-            </tr>
-            </tbody>
-        </table>
-        <h3>Details</h3>
-        <table class="table">
-            <tbody>
-            <tr>
-                <td>stop</td>
-                <td>@Choices.finish_details.stop</td>
-            </tr>
-            <tr>
-                <td>type</td>
-                <td>@Choices.finish_details.type</td>
-            </tr>
-            <tr>
-                <td>Role</td>
-                <td>@Choices.message.role</td>
-            </tr>
-            </tbody>
-        </table>
-    } *@
+        <label>Prompt</label>
+        <textarea @bind="promptText" style="width: 100%; height: 100%"></textarea>
+    </div>
+    <div class="center">
+        @if (showResult)
+        {
+            <h3>Resultat</h3>
+            <p>@responseText</p>
+        }
+        else
+        {
+            <p>@statusText</p>
+        }
+    </div>
+    <div class="right">
+        @if (showResult)
+        {
+            <h3>Usage</h3>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td>Prompt Tokens</td>
+                        <td>@usage.prompt_tokens</td>
+                    </tr>
+                    <tr>
+                        <td>Completion Tokens</td>
+                        <td>@usage.completion_tokens</td>
+                    </tr>
+                    <tr>
+                        <td>Total Tokens</td>
+                        <td>@usage.total_tokens</td>
+                    </tr>
+                    <tr>
+                        <td>USD</td>
+                        <td>@usage.USD.ToString("N4")$</td>
+                    </tr>
+                    <tr>
+                        <td>ØRE</td>
+                        <td>@usage.Ore.ToString("N4")</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3>Details</h3>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td>stop</td>
+                        <td>@Choices.finish_details.stop</td>
+                    </tr>
+                    <tr>
+                        <td>type</td>
+                        <td>@Choices.finish_details.type</td>
+                    </tr>
+                    <tr>
+                        <td>Role</td>
+                        <td>@Choices.message.role</td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+    </div>
 </div>
 
 
 
 @code {
     private bool HighDetail = false;
-    private int MaxTokens = 300;
+    private int MaxTokens = 50;
     private ImageModel imageModel = new ImageModel();
     private string promptText;
 
@@ -106,10 +108,13 @@
     private string responseText;
     private Choice Choices;
     private bool showResult = false;
+    private bool isUploading = false;
     private string statusText = "test";
 
     private async Task HandleFileChange(InputFileChangeEventArgs e)
     {
+        statusText = "Loading file";
+        isUploading = true;
         showResult = false;
         imageModel = new ImageModel();
         if (e.File != null)
@@ -123,16 +128,24 @@
             }
             catch (Exception exception)
             {
+                isUploading = false;
                 Console.WriteLine(exception);
                 statusText = "Error loading file selected";
             }
         }
+        isUploading = false;
+        statusText = "Image loaded";
         StateHasChanged(); // Add this line to update the page after handling the file change
     }
 
 
     private async Task CallOpenAPI()
     {
+        if (isUploading)
+        {
+            statusText = "Image still loading";
+            return;
+        }
         showResult = false;
         if (imageModel.Data == null)
         {

@@ -3,28 +3,30 @@
 
 .container {
     display: flex;
+    min-height: 300px;
 }
 
 .left {
     width: 40%;
     background-color: #f0f0f0; /* Optional: Add a background color */
-    padding: 20px;
+    padding: 10px;
 }
 
 
 .center {
     width: 40%;
     align-items: center;
-    background-color: #f0f0f0; /* Optional: Add a background color */
-    padding: 20px;
+    background-color: #d3d3d3; /* Optional: Add a background color */
+    display: flex;
+    justify-content: center;
+    padding: 10px;
 }
 
 .right {
     width: 20%;
-    background-color: #e0e0e0; /* Optional: Add a background color */
-    padding: 20px;
+    background-color: #c0c0c0; /* Optional: Add a background color */
+    padding: 10px;
 }
-
 
 
 .horizontal-container {
