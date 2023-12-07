@@ -32,3 +32,6 @@ C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\ref\Visions.dll
 C:\Source\DHack\Visions\Visions\bin\Debug\net7.0\Newtonsoft.Json.dll
 C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\Visions.csproj.AssemblyReference.cache
 C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\Visions.csproj.CopyComplete
+C:\Source\DHack\Visions\Visions\bin\Debug\net7.0\Microsoft.Win32.SystemEvents.dll
+C:\Source\DHack\Visions\Visions\bin\Debug\net7.0\System.Drawing.Common.dll
+C:\Source\DHack\Visions\Visions\bin\Debug\net7.0\runtimes\win\lib\net7.0\Microsoft.Win32.SystemEvents.dll

@@ -34,7 +34,7 @@
     private ImageModel uploadedImage;
     private string promptText;
     private InputFile fileInput;
-    private string responseText;
+    private ChatCompletion response;
 
     private async Task HandleFileChange(InputFileChangeEventArgs e)
     {
@@ -57,7 +57,7 @@
 
         var OpenAI = new OpenAI();
         // call the openai class that will call the OpenAI API
-        responseText = await OpenAI.GetImageDescription(imageModel.ImageBase64, promptText);
+        response = await OpenAI.GetImageDescription(imageModel, promptText);
     }
 
     private async Task HandleSubmit()
