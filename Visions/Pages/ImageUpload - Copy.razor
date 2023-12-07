@@ -1,0 +1,37 @@
+﻿// ImageUpload.razor
+
+@page "/image"
+@inject IJSRuntime JSRuntime
+
+<h3>Image Upload</h3>
+
+<InputFile @ref="fileInput" id="imageInput" OnChange="HandleFileChange" />
+
+@* <input type="file"  @onchange="HandleFileChange" /> *@
+
+<img src="@ImageUrl" alt="Uploaded Image" style="max-width: 100%; max-height: 300px;" />
+
+@code {
+    private string ImageUrl;
+
+    private InputFile fileInput;
+
+    private async Task HandleFileChange(InputFileChangeEventArgs e)
+    {
+        var imageFile = e.File;
+
+        if (imageFile != null)
+        {
+    // Generate a unique filename or use other logic as needed
+            var fileName = $"{Guid.NewGuid()}-{imageFile.Name}";
+
+    // Save the file on the server (you might need a server API endpoint for this)
+    // Example: await MyApi.UploadImage(fileName, imageFile);
+
+    // Update the image URL to display the uploaded image
+            ImageUrl = $"path/to/uploaded/images/{fileName}";
+
+    // You can also perform additional actions here, such as showing a success message.
+        }
+    }
+}

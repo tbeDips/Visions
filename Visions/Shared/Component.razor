@@ -1,0 +1,64 @@
+﻿@* @page "/choice-list"
+@inherits ComponentBase
+
+<h3>Choice List</h3>
+
+@if (Choices != null && Choices.Any())
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Index</th>
+            <th>Message Content</th>
+            <th>Finish Details Summary</th>
+            <!-- Add more headers for additional properties -->
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var choice in Choices)
+        {
+            <tr>
+                <td>@choice.Index</td>
+                <td>@choice.Message.Content</td>
+                <td>@choice.FinishDetails.Summary</td>
+                <!-- Add more cells for additional properties -->
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No choices available.</p>
+}
+
+@code {
+    private List<Choice> Choices { get; set; }
+
+    protected override void OnInitialized()
+    {
+    // Initialize or fetch the list of choices
+        Choices = GetChoices(); // Replace this with your data retrieval logic
+    }
+
+    private List<Choice> GetChoices()
+    {
+    // Replace this with your logic to retrieve or create a list of choices
+        return new List<Choice>
+        {
+            new Choice
+            {
+                Message = new Message { Content = "Choice 1" },
+                FinishDetails = new FinishDetails { Summary = "Summary 1" },
+                Index = 1
+            },
+            new Choice
+            {
+                Message = new Message { Content = "Choice 2" },
+                FinishDetails = new FinishDetails { Summary = "Summary 2" },
+                Index = 2
+            },
+    // Add more choices as needed
+        };
+    }
+} *@

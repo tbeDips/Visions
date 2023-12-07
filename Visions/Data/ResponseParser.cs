@@ -15,7 +15,7 @@ public class ChatCompletion
     public long created { get; set; }
     public string model { get; set; }
     public Usage usage { get; set; }
-    public Choice[] choices { get; set; }
+    public IEnumerable<Choice> choices { get; set; }
 }
 
 public class Usage
@@ -28,7 +28,7 @@ public class Usage
     public int completion_tokens { get; set; }
     public int total_tokens { get; set; }
     public double USD => total_tokens * USDperToken;
-    public double Ore => USD * NOKperUSD /100;
+    public double Ore => USD * NOKperUSD /10 ;
 
 }
 

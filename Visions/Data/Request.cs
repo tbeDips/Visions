@@ -22,8 +22,10 @@ public partial class OpenAI
 
     public class JsonRequest
     {
+
         public string model { get; set; }
         public Message[] messages { get; set; }
         public int max_tokens { get; set; }
+        
     }
 }

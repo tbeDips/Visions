@@ -24,16 +24,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2hhdC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Source/DHack/Visions/Visions/Pages/FetchData.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmV0Y2hEYXRhLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Source/DHack/Visions/Visions/Pages/ImageDescription.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW1hZ2VEZXNjcmlwdGlvbi5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Source/DHack/Visions/Visions/Pages/ImageUpload - Copy.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW1hZ2VVcGxvYWQgLSBDb3B5LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Source/DHack/Visions/Visions/Pages/ImageUpload.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW1hZ2VVcGxvYWQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Source/DHack/Visions/Visions/Shared/Component.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXENvbXBvbmVudC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Source/DHack/Visions/Visions/Shared/SurveyPrompt.razor]

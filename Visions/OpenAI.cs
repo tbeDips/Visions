@@ -25,14 +25,14 @@ public partial class OpenAI
         var path = Path.Combine(Environment.CurrentDirectory, filePath);
         if (!File.Exists(filePath))
         {
-            return "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";
+            return Secrets.Keys.OpenAIApi;
             throw new Exception($"File not found: {path}");
         }
         string apiKey = File.ReadAllText(path);
         return apiKey;
     }
 
-    public string MakePayload(string imageBase64, string prompt, int maxTokens = 150, bool detailHigh = false)
+    public string MakePayload(string imageBase64, string prompt, int maxTokens = 50, bool detailHigh = false)
     {
         var request = new JsonRequest
         {
@@ -46,7 +46,7 @@ public partial class OpenAI
                     {
                         new Content { 
                             type = "text", 
-                            text = "What’s in this image?" },
+                            text = prompt },
                         new Content
                         {
                             type = "image_url",
@@ -72,22 +72,22 @@ public partial class OpenAI
         return JsonConvert.SerializeObject(request, Formatting.Indented, settings);
     }
 
-    public async Task<ChatCompletion> GetImageDescription(ImageModel image, string prompt)
+    public async Task<ChatCompletion> GetImageDescription(ImageModel image, string prompt, int maxTokens,bool detailHigh = false)
     {
-        ChatCompletion result = new ChatCompletion();
         using (var client = new HttpClient())
         {
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {APIKey}");
 
-            var payload = MakePayload(image.ImageBase64, prompt);
+            var payload = MakePayload(image.ImageBase64, prompt, maxTokens, detailHigh);
             Console.WriteLine(payload);
             var response = await client.PostAsync(APIURL, new StringContent(payload, Encoding.UTF8, "application/json"));
             if (response.IsSuccessStatusCode)
             {
-                result = ResponseParser.ParseResponse(await response.Content.ReadAsStringAsync());
+                return ResponseParser.ParseResponse(await response.Content.ReadAsStringAsync());
+
             }
         }
-        return result;
+        return new ChatCompletion();
     }
 
 }

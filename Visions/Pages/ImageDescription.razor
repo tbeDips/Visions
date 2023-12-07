@@ -1,82 +1,169 @@
 ﻿@page "/"
-@using Microsoft.AspNetCore.Components.Forms
 @using Visions.Data
+@using System.Linq
 @inject IJSRuntime JSRuntime
 
-<h3>Image Upload</h3>
+<div class="container">
+    <div>
+        <h2>Choose image</h2>
+        <EditForm model="imageModel">
+            <div class="horizontal-container">
+                <InputFile @ref="fileInput" OnChange="HandleFileChange" />
+            </div>
 
-<div class="top-left">
-    <EditForm model="imageModel" OnValidSubmit="HandleSubmit">
-        <div class="horizontal-container">
-            <InputFile @ref="fileInput" OnChange="HandleFileChange" />
+            <div class="image-preview" style="display: @(imageModel.Data == null ? "none" : "block")">
+                @if (imageModel.Data != null)
+                {
+                    <img src="@($"data:image/png;base64,{Convert.ToBase64String(imageModel.Data)}")" alt="Selected Image" style="max-height: 600px; max-width: 1000px;" />
+                }
+            </div>
+        </EditForm>
+    </div>
 
-        </div>
-
-        <div class="image-preview" style="display: @(imageModel.Data == null ? "none" : "block")">
-            @if (imageModel.Data != null)
-            {
-                <img src="@($"data:image/png;base64,{Convert.ToBase64String(imageModel.Data)}")" alt="Selected Image" />
-            }
-        </div>
-    </EditForm>
 </div>
 
-<div class="right">
-    <input type="text" @bind="promptText" />
+<div>
+    
+        <input type="checkbox" @bind="HighDetail" name="High" value="True">
+        <label>HighDetail</label>
+        <input type="number" @bind="MaxTokens" />
+        <label>MaxTokens</label>
+        <button type="submit" @onclick="CallOpenAPI" class="btn-primary">submit</button>
+    
+    <label>Prompt</label>
+    <textarea @bind="promptText" style="width: 100%; height: 100%"></textarea>
+
+    <p>@statusText</p>
+@*     @if (showResult)
+    {
+        <h3>Resultat</h3>
+        <p>@responseText</p>
+    }
+    else
+    {
+        <p>@statusText</p>
+    } *@
+
+@*     <p>@statusText</p>
+    @if (showResult)
+    {
+        <h3>Usage</h3>
+        <table class="table">
+            <tbody>
+            <tr>
+                <td>Prompt Tokens</td>
+                <td>@usage.prompt_tokens</td>
+            </tr>
+            <tr>
+                <td>Completion Tokens</td>
+                <td>@usage.completion_tokens</td>
+            </tr>
+            <tr>
+                <td>Total Tokens</td>
+                <td>@usage.total_tokens</td>
+            </tr>
+            <tr>
+                <td>USD</td>
+                <td>@usage.USD.ToString("N4")$</td>
+            </tr>
+            <tr>
+                <td>ØRE</td>
+                <td>@usage.Ore.ToString("N4")</td>
+            </tr>
+            </tbody>
+        </table>
+        <h3>Details</h3>
+        <table class="table">
+            <tbody>
+            <tr>
+                <td>stop</td>
+                <td>@Choices.finish_details.stop</td>
+            </tr>
+            <tr>
+                <td>type</td>
+                <td>@Choices.finish_details.type</td>
+            </tr>
+            <tr>
+                <td>Role</td>
+                <td>@Choices.message.role</td>
+            </tr>
+            </tbody>
+        </table>
+    } *@
 </div>
-<button type="submit" @onclick="CallOpenAPI" class="btn-primary">Description</button>
-<div class="results">
-    <p>@responseText</p>
-</div>
+
+
 
 @code {
+    private bool HighDetail = false;
+    private int MaxTokens = 300;
     private ImageModel imageModel = new ImageModel();
-    private ImageModel uploadedImage;
     private string promptText;
+
     private InputFile fileInput;
     private ChatCompletion response;
+    private Usage usage;
+    private string responseText;
+    private Choice Choices;
+    private bool showResult = false;
+    private string statusText = "test";
 
     private async Task HandleFileChange(InputFileChangeEventArgs e)
     {
+        showResult = false;
+        imageModel = new ImageModel();
         if (e.File != null)
         {
-            var buffer = new byte[e.File.Size];
-            await e.File.OpenReadStream().ReadAsync(buffer);
-            imageModel.FileName = e.File.Name;
-            imageModel.Data = buffer;
+            try
+            {
+                using var memoryStream = new MemoryStream();
+                await e.File.OpenReadStream(maxAllowedSize: 2147483648).CopyToAsync(memoryStream);
+                imageModel.FileName = e.File.Name;
+                imageModel.Data = memoryStream.ToArray();
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                statusText = "Error loading file selected";
+            }
         }
+        StateHasChanged(); // Add this line to update the page after handling the file change
     }
+
 
     private async Task CallOpenAPI()
     {
-        // make sure the prompt text is not empty
-        if (string.IsNullOrEmpty(promptText))
+        showResult = false;
+        if (imageModel.Data == null)
         {
+            statusText = "No file selected";
             return;
         }
 
+        // make sure the prompt text is not empty
+        if (string.IsNullOrEmpty(promptText))
+        {
+            statusText = "No prompt";
+            return;
+        }
+
+        statusText = "Working";
+
         var OpenAI = new OpenAI();
         // call the openai class that will call the OpenAI API
-        response = await OpenAI.GetImageDescription(imageModel, promptText);
+        response = await OpenAI.GetImageDescription(imageModel, promptText, MaxTokens, HighDetail);
+        if (response == null)
+        {
+            statusText = "No response";
+            return;
+        }
+
+        usage = response.usage;
+        Choices = response.choices.FirstOrDefault();
+        responseText = Choices.message.content;
+        showResult = true;
+        statusText = "Done";
+
     }
 
-    private async Task HandleSubmit()
-    {
-
-        uploadedImage = new ImageModel
-            {
-                FileName = imageModel.FileName,
-                Data = imageModel.Data
-            };
-
-        // Save the uploaded image to a folder (replace "Uploads" with your desired folder name)
-        string uploadFolderPath = "Uploads";
-        string filePath = Path.Combine(uploadFolderPath, uploadedImage.FileName);
-
-        // Ensure the folder exists, create it if not
-        Directory.CreateDirectory(uploadFolderPath);
-
-        // Save the image data to the file
-        File.WriteAllBytes(filePath, uploadedImage.Data);
-    }
 }

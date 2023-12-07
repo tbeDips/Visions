@@ -1,5 +1,32 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+
+.container {
+    display: flex;
+}
+
+.left {
+    width: 40%;
+    background-color: #f0f0f0; /* Optional: Add a background color */
+    padding: 20px;
+}
+
+
+.center {
+    width: 40%;
+    align-items: center;
+    background-color: #f0f0f0; /* Optional: Add a background color */
+    padding: 20px;
+}
+
+.right {
+    width: 20%;
+    background-color: #e0e0e0; /* Optional: Add a background color */
+    padding: 20px;
+}
+
+
+
 .horizontal-container {
     display: flex;
     align-items: center;

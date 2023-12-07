@@ -6,6 +6,11 @@ C:\Source\DHack\Visions\Visions\bin\Debug\net7.0\Visions.deps.json
 C:\Source\DHack\Visions\Visions\bin\Debug\net7.0\Visions.runtimeconfig.json
 C:\Source\DHack\Visions\Visions\bin\Debug\net7.0\Visions.dll
 C:\Source\DHack\Visions\Visions\bin\Debug\net7.0\Visions.pdb
+C:\Source\DHack\Visions\Visions\bin\Debug\net7.0\Microsoft.Win32.SystemEvents.dll
+C:\Source\DHack\Visions\Visions\bin\Debug\net7.0\Newtonsoft.Json.dll
+C:\Source\DHack\Visions\Visions\bin\Debug\net7.0\System.Drawing.Common.dll
+C:\Source\DHack\Visions\Visions\bin\Debug\net7.0\runtimes\win\lib\net7.0\Microsoft.Win32.SystemEvents.dll
+C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\Visions.csproj.AssemblyReference.cache
 C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\Visions.GeneratedMSBuildEditorConfig.editorconfig
 C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\Visions.AssemblyInfoInputs.cache
 C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\Visions.AssemblyInfo.cs
@@ -24,14 +29,9 @@ C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\scopedcss\Shared\MainLayout.raz
 C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\scopedcss\Shared\NavMenu.razor.rz.scp.css
 C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\scopedcss\bundle\Visions.styles.css
 C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\scopedcss\projectbundle\Visions.bundle.scp.css
+C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\Visions.csproj.CopyComplete
 C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\Visions.dll
 C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\refint\Visions.dll
 C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\Visions.pdb
 C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\Visions.genruntimeconfig.cache
 C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\ref\Visions.dll
-C:\Source\DHack\Visions\Visions\bin\Debug\net7.0\Newtonsoft.Json.dll
-C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\Visions.csproj.AssemblyReference.cache
-C:\Source\DHack\Visions\Visions\obj\Debug\net7.0\Visions.csproj.CopyComplete
-C:\Source\DHack\Visions\Visions\bin\Debug\net7.0\Microsoft.Win32.SystemEvents.dll
-C:\Source\DHack\Visions\Visions\bin\Debug\net7.0\System.Drawing.Common.dll
-C:\Source\DHack\Visions\Visions\bin\Debug\net7.0\runtimes\win\lib\net7.0\Microsoft.Win32.SystemEvents.dll
