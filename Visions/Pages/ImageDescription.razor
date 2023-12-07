@@ -1,0 +1,82 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Components.Forms
+@using Visions.Data
+@inject IJSRuntime JSRuntime
+
+<h3>Image Upload</h3>
+
+<div class="top-left">
+    <EditForm model="imageModel" OnValidSubmit="HandleSubmit">
+        <div class="horizontal-container">
+            <InputFile @ref="fileInput" OnChange="HandleFileChange" />
+
+        </div>
+
+        <div class="image-preview" style="display: @(imageModel.Data == null ? "none" : "block")">
+            @if (imageModel.Data != null)
+            {
+                <img src="@($"data:image/png;base64,{Convert.ToBase64String(imageModel.Data)}")" alt="Selected Image" />
+            }
+        </div>
+    </EditForm>
+</div>
+
+<div class="right">
+    <input type="text" @bind="promptText" />
+</div>
+<button type="submit" @onclick="CallOpenAPI" class="btn-primary">Description</button>
+<div class="results">
+    <p>@responseText</p>
+</div>
+
+@code {
+    private ImageModel imageModel = new ImageModel();
+    private ImageModel uploadedImage;
+    private string promptText;
+    private InputFile fileInput;
+    private string responseText;
+
+    private async Task HandleFileChange(InputFileChangeEventArgs e)
+    {
+        if (e.File != null)
+        {
+            var buffer = new byte[e.File.Size];
+            await e.File.OpenReadStream().ReadAsync(buffer);
+            imageModel.FileName = e.File.Name;
+            imageModel.Data = buffer;
+        }
+    }
+
+    private async Task CallOpenAPI()
+    {
+        // make sure the prompt text is not empty
+        if (string.IsNullOrEmpty(promptText))
+        {
+            return;
+        }
+
+        var OpenAI = new OpenAI();
+        // call the openai class that will call the OpenAI API
+        responseText = await OpenAI.GetImageDescription(imageModel.ImageBase64, promptText);
+    }
+
+    private async Task HandleSubmit()
+    {
+
+        uploadedImage = new ImageModel
+            {
+                FileName = imageModel.FileName,
+                Data = imageModel.Data
+            };
+
+        // Save the uploaded image to a folder (replace "Uploads" with your desired folder name)
+        string uploadFolderPath = "Uploads";
+        string filePath = Path.Combine(uploadFolderPath, uploadedImage.FileName);
+
+        // Ensure the folder exists, create it if not
+        Directory.CreateDirectory(uploadFolderPath);
+
+        // Save the image data to the file
+        File.WriteAllBytes(filePath, uploadedImage.Data);
+    }
+}

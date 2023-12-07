@@ -1,0 +1,75 @@
+﻿@page "/ImageUpload"
+@using Microsoft.AspNetCore.Components.Forms
+@using Visions.Data
+@inject IJSRuntime JSRuntime
+
+<h3>Image Upload</h3>
+
+<EditForm model="imageModel" OnValidSubmit="HandleSubmit">
+    <div class="horizontal-container">
+        <InputFile @ref="fileInput" OnChange="HandleFileChange" />
+        <button type="submit" class="btn-primary" disabled="@isUploading">Upload</button>
+        @if (isUploading)
+        {
+            <p>Uploading...</p>
+        }
+        @if (uploadedImage != null)
+        {
+            <p>Uploaded Image</p>
+        }
+    </div>
+
+    <div class="image-preview" style="display: @(imageModel.Data == null ? "none" : "block")">
+        @if (imageModel.Data != null)
+        {
+            <img src="@($"data:image/png;base64,{Convert.ToBase64String(imageModel.Data)}")" alt="Selected Image" />
+        }
+    </div>
+
+</EditForm>
+
+
+@code {
+    private ImageModel imageModel = new ImageModel();
+    private bool isUploading = false;
+    private ImageModel uploadedImage;
+
+    private InputFile fileInput;
+
+    private async Task HandleFileChange(InputFileChangeEventArgs e)
+    {
+        if (e.File != null)
+        {
+            var buffer = new byte[e.File.Size];
+            await e.File.OpenReadStream().ReadAsync(buffer);
+            imageModel.FileName = e.File.Name;
+            imageModel.Data = buffer;
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        isUploading = true;
+
+
+        uploadedImage = new ImageModel
+            {
+                FileName = imageModel.FileName,
+                Data = imageModel.Data
+            };
+
+        // Save the uploaded image to a folder (replace "Uploads" with your desired folder name)
+        string uploadFolderPath = "Uploads";
+        string filePath = Path.Combine(uploadFolderPath, uploadedImage.FileName);
+
+        // Ensure the folder exists, create it if not
+        Directory.CreateDirectory(uploadFolderPath);
+
+        // Save the image data to the file
+        File.WriteAllBytes(filePath, uploadedImage.Data);
+
+        imageModel = new ImageModel();
+        uploadedImage = null;
+        isUploading = false;
+    }
+}

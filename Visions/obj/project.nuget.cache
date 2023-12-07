@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "NimxfBO47DXeep+BHoLWpEgAfbIaom+btj45yVWtYhYUyaSnlu8yzgkuxYxAEqCLpa8MyDGfG4is/+3cXTC23Q==",
+  "success": true,
+  "projectFilePath": "C:\\Source\\DHack\\Visions\\Visions\\Visions.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\tbe\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.19.4\\microsoft.visualstudio.azure.containers.tools.targets.1.19.4.nupkg.sha512",
+    "C:\\Users\\tbe\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

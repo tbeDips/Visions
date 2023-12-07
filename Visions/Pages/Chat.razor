@@ -1,0 +1,34 @@
+﻿@page "/chat"
+
+<PageTitle>chat</PageTitle>
+
+<h1>chat</h1>
+
+<div>
+    <input type="text" @bind="promptText" />
+    <button @onclick="CallOpenAPI">Submit</button>
+</div>
+
+@if (!string.IsNullOrEmpty(responseText))
+{
+    <div>
+        <h3>Response:</h3>
+        <p>@responseText</p>
+    </div>
+}
+
+@code {
+    private string promptText;
+    private string responseText;
+
+    private async Task CallOpenAPI()
+    {
+        // make sure the prompt text is not empty
+
+        // add class that will call the OpenAI API
+
+
+        // Call OpenAI API with the prompt text
+        // Store the response in the 'responseText' variable
+    }
+}
