@@ -28,7 +28,7 @@ public class Usage
     public int completion_tokens { get; set; }
     public int total_tokens { get; set; }
     public double USD => total_tokens * USDperToken;
-    public double Ore => USD * NOKperUSD /10 ;
+    public double Ore => USD * NOKperUSD * 100 ;
 
 }
 

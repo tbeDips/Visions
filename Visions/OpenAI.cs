@@ -74,20 +74,24 @@ public partial class OpenAI
 
     public async Task<ChatCompletion> GetImageDescription(ImageModel image, string prompt, int maxTokens,bool detailHigh = false)
     {
+        Console.WriteLine("GetImageDescription started");
         using (var client = new HttpClient())
         {
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {APIKey}");
 
+            Console.WriteLine("GetImageDescription calling api");
             var payload = MakePayload(image.ImageBase64, prompt, maxTokens, detailHigh);
-            Console.WriteLine(payload);
+            
+
             var response = await client.PostAsync(APIURL, new StringContent(payload, Encoding.UTF8, "application/json"));
             if (response.IsSuccessStatusCode)
             {
+                Console.WriteLine("GetImageDescription return success");
                 return ResponseParser.ParseResponse(await response.Content.ReadAsStringAsync());
 
             }
         }
-        return new ChatCompletion();
+        throw new Exception("GetImageDescription failed");
     }
 
 }

@@ -2,103 +2,104 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using Visions.Data
 @using System.Linq
+@using System.Text.Json
+@using JsonException = Newtonsoft.Json.JsonException
 @inject IJSRuntime JSRuntime
 
 <div class="container">
-    <div>
-        <h2>Choose image</h2>
-        <EditForm model="imageModel">
-            <div class="horizontal-container">
-                <InputFile @ref="fileInput" OnChange="HandleFileChange" />
-            </div>
+    <div class="left-container">
+        <div class="top-left">
+            <h2>Choose image</h2>
+            <EditForm model="imageModel">
+                <div class="horizontal-container">
+                    <InputFile @ref="fileInput" OnChange="HandleFileChange" />
+                </div>
 
-            <div class="image-preview" style="display: @(imageModel.Data == null ? "none" : "block")">
-                @if (imageModel.Data != null)
+                <div class="image-preview" style="display: @(imageModel.Data == null ? "none" : "block")">
+                    @if (imageModel.Data != null)
+                    {
+                        <img src="@($"data:image/png;base64,{Convert.ToBase64String(imageModel.Data)}")" alt="Selected Image" style="max-height: 600px; max-width: 600px;" />
+                    }
+                </div>
+            </EditForm>
+        </div>
+        <div class="bottom-left">
+            <div class="left">
+                <input type="checkbox" @bind="HighDetail" name="High" value="True" style="padding: 5px">
+                <label style="padding: 5px">HighDetail</label>
+                <input type="number" @bind="MaxTokens" style=" max-width: 80px; padding: 5px" />
+                <label style="padding: 5px">MaxTokens</label>
+                <button type="submit" style="padding: 5px" @onclick="CallOpenAPI" class="btn-primary">submit</button>
+                <div style="width: 100%; height: 100%">
+                    <label style="padding: 5px">Prompt</label>
+                    <textarea @bind="promptText" style="width: 100%; height: 100%"></textarea>
+                </div>
+            </div>
+            <div class="right">
+                @if (showResult)
                 {
-                    <img src="@($"data:image/png;base64,{Convert.ToBase64String(imageModel.Data)}")" alt="Selected Image" style="max-height: 600px; max-width: 1000px;" />
+                    <time>sec @TimeUsed.ToString("ss")</time>
+                    <h3>Usage</h3>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>Prompt Tokens</td>
+                                <td>@usage.prompt_tokens</td>
+                            </tr>
+                            <tr>
+                                <td>Completion Tokens</td>
+                                <td>@usage.completion_tokens</td>
+                            </tr>
+                            <tr>
+                                <td>Total Tokens</td>
+                                <td>@usage.total_tokens</td>
+                            </tr>
+                            <tr>
+                                <td>USD</td>
+                                <td>@usage.USD.ToString("N4")$</td>
+                            </tr>
+                            <tr>
+                                <td>ØRE</td>
+                                <td>@usage.Ore.ToString("N1")</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3>Details</h3>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>stop</td>
+                                <td>@Choices.finish_details.stop</td>
+                            </tr>
+                            <tr>
+                                <td>type</td>
+                                <td>@Choices.finish_details.type</td>
+                            </tr>
+                            <tr>
+                                <td>Role</td>
+                                <td>@Choices.message.role</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 }
             </div>
-        </EditForm>
+        </div>
     </div>
-
-</div>
-<div class="container" >
-    <div class="left">
-
-        <input type="checkbox" @bind="HighDetail" name="High" value="True">
-        <label>HighDetail</label>
-        <input type="number" @bind="MaxTokens" />
-        <label>MaxTokens</label>
-        <button type="submit" @onclick="CallOpenAPI" class="btn-primary">submit</button>
-
-        <label>Prompt</label>
-        <textarea @bind="promptText" style="width: 100%; height: 100%"></textarea>
-    </div>
-    <div class="center">
+    <div class="right-container">
         @if (showResult)
         {
-            <h3>Resultat</h3>
-            <p>@responseText</p>
+            <textarea style="width: 100%; height: 100%">@responseText</textarea>
         }
         else
         {
             <p>@statusText</p>
         }
     </div>
-    <div class="right">
-        @if (showResult)
-        {
-            <h3>Usage</h3>
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td>Prompt Tokens</td>
-                        <td>@usage.prompt_tokens</td>
-                    </tr>
-                    <tr>
-                        <td>Completion Tokens</td>
-                        <td>@usage.completion_tokens</td>
-                    </tr>
-                    <tr>
-                        <td>Total Tokens</td>
-                        <td>@usage.total_tokens</td>
-                    </tr>
-                    <tr>
-                        <td>USD</td>
-                        <td>@usage.USD.ToString("N4")$</td>
-                    </tr>
-                    <tr>
-                        <td>ØRE</td>
-                        <td>@usage.Ore.ToString("N4")</td>
-                    </tr>
-                </tbody>
-            </table>
-            <h3>Details</h3>
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td>stop</td>
-                        <td>@Choices.finish_details.stop</td>
-                    </tr>
-                    <tr>
-                        <td>type</td>
-                        <td>@Choices.finish_details.type</td>
-                    </tr>
-                    <tr>
-                        <td>Role</td>
-                        <td>@Choices.message.role</td>
-                    </tr>
-                </tbody>
-            </table>
-        }
-    </div>
 </div>
 
-
-
 @code {
-    private bool HighDetail = false;
-    private int MaxTokens = 50;
+    private bool HighDetail = true;
+    private int MaxTokens = 1000;
     private ImageModel imageModel = new ImageModel();
     private string promptText;
 
@@ -110,6 +111,7 @@
     private bool showResult = false;
     private bool isUploading = false;
     private string statusText = "test";
+    public TimeSpan TimeUsed { get; set; }
 
     private async Task HandleFileChange(InputFileChangeEventArgs e)
     {
@@ -141,6 +143,8 @@
 
     private async Task CallOpenAPI()
     {
+        // time used
+        var timeStart = DateTime.Now;
         if (isUploading)
         {
             statusText = "Image still loading";
@@ -164,19 +168,69 @@
 
         var OpenAI = new OpenAI();
         // call the openai class that will call the OpenAI API
-        response = await OpenAI.GetImageDescription(imageModel, promptText, MaxTokens, HighDetail);
-        if (response == null)
+        try
         {
-            statusText = "No response";
+            response = await OpenAI.GetImageDescription(imageModel, promptText, MaxTokens, HighDetail);
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            statusText = "failed";
             return;
         }
+
 
         usage = response.usage;
         Choices = response.choices.FirstOrDefault();
         responseText = Choices.message.content;
+
+        var json = ExtractAndParseJson(responseText);
+        if (json != null)
+        {
+            responseText = FormatJsonDocument(json);
+        }
+
         showResult = true;
         statusText = "Done";
-
+        this.TimeUsed = DateTime.Now - timeStart;
     }
 
+    static JsonDocument ExtractAndParseJson(string input)
+    {
+        string pattern = @"```json(.*?)```";
+        var match = System.Text.RegularExpressions.Regex.Match(input, pattern, System.Text.RegularExpressions.RegexOptions.Singleline);
+
+        if (match.Success)
+        {
+            string jsonContent = match.Groups[1].Value.Trim();
+
+    // Parse the JSON content
+            try
+            {
+                return JsonDocument.Parse(jsonContent);
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"Error parsing JSON: {ex.Message}");
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    private static string FormatJsonDocument(JsonDocument jsonDocument)
+    {
+        if (jsonDocument == null)
+        {
+            throw new ArgumentNullException(nameof(jsonDocument));
+        }
+
+    // Serialize the JsonDocument to a formatted JSON string
+        return JsonSerializer.Serialize(jsonDocument.RootElement, new JsonSerializerOptions
+        {
+            WriteIndented = true
+        });
+    }
 }
